@@ -1,0 +1,60 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Archivos de configuración de IDEs
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Archivos de configuración de PyCharm
+*.iml
+
+# Archivos de base de datos
+db.sqlite3
+
+# Archivos de migraciones
+*/migrations/*.py
+*/migrations/*.pyc
+
+# Archivos de configuración de Django
+*.log
+*.pot
+*.pyc
+
+# Archivos estáticos y media
+/static/
+media/
+
+# Configuración de Docker (si aplica)
+docker-compose.yml
+Dockerfile
+
+# Archivos de configuración de Elasticsearch (si aplica)
+elasticsearch.yml
+
+# Archivos temporales y cachés
+*.DS_Store
+*.swp
+*~
+Thumbs.db
+
+# Archivos de pruebas y cobertura
+.coverage
+nosetests.xml
+test-results/
+
+# Entorno local (si usas .env)
+.env
+
+# Otros archivos que no deseas incluir en el repositorio
