@@ -98,18 +98,15 @@ json
   ]
 }
 ```
-## Uso de IA para la Optimización
-Se usó ChatGPT para optimizar la configuración y rendimiento de Elasticsearch en los siguientes aspectos:
+## Uso de IA
+Se uso la IA para medir la escala de trabajo y organizar las tareas en el proyecto. 
+Ver [Plan de Tareas - Prueba Técnica](project_technical_specifications.md).
+Para la optimizacion de consultas se uso Claude para mejorar las consultas de Elasticsearch basdo en el modelo de producto, los requerimientos tecnicos y la consulta base que se contruyo en la vista.
+De manera genral se uso la IA para contruir logica solida en cada tarea. Las herramientas utilizadas fueron:
+- **ChatGPT**: Generar documentos.
+- **Claude**: Mejorar consultas.
+- **Codeium**: Refactorizar código.
+- **Perplexity**: Búsqueda de información relacionada.
 
-Optimización de Consultas: Sugerencias para reducir la latencia y mejorar el rendimiento en las consultas de Elasticsearch.
-Configuración de Relevancia: Ajustes en los campos de búsqueda para mejorar el orden de resultados.
-Manejo de Errores: Implementación de control de errores para garantizar la continuidad del flujo.
-Evaluación del Proyecto
-Calidad del Código: El proyecto está organizado siguiendo buenas prácticas de Django.
-Funcionalidad Completa: La API cumple con todos los filtros y funcionalidad solicitados.
-Uso Documentado de IA: El README documenta cómo se usó la IA para optimizar la API y Elasticsearch.
-Contribuciones
-Para contribuir a este proyecto, por favor crea una rama nueva y abre un Pull Request.
-
-Licencia
+## Licencia
 Este proyecto está bajo la Licencia MIT.
