@@ -1,92 +1,105 @@
-# views.py
 from elasticsearch_dsl import Q
+from elasticsearch.exceptions import ConnectionError as ESConnectionError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
 from .documents import ProductDocument
+
 
 @api_view(["GET"])
 def search_products(request):
     """
-    Vista para búsqueda avanzada de productos con soporte para español
+    View for advanced search of products with Spanish support
     """
-    # Obtener parámetros de búsqueda
-    query = request.GET.get("query", "")
-    precio_min = request.GET.get("precio_min")
-    precio_max = request.GET.get("precio_max")
-    categoria = request.GET.get("categoria")
-    solo_disponibles = request.GET.get("disponibles", "false").lower() == "true"
+    try:
+        # Get and validate parameters
+        query = request.GET.get("query", "")
+        price_min = request.GET.get("price_min")
+        price_max = request.GET.get("price_max")
+        category = request.GET.get("category")
+        only_available = request.GET.get("available", "false").lower() == "true"
 
-    # Construir la consulta base
-    search = ProductDocument.search()
+        # Validate prices before continuing
+        try:
+            if price_min:
+                price_min = float(price_min)
+            if price_max:
+                price_max = float(price_max)
+        except ValueError:
+            return Response({"error": "Invalid price values"}, status=400)
 
-    # Búsqueda por texto en nombre y descripción con boost
-    if query:
-        search = search.query(
-            Q("multi_match",
-              query=query,
-              fields=['name^2', 'description'],
-              type="best_fields",
-              analyzer='spanish',
-              minimum_should_match="75%"
+        # Build the base query
+        search = ProductDocument.search()
+        must_queries = []
+        filter_queries = []
+
+        # Text search
+        if query:
+            must_queries.append(
+                Q(
+                    "multi_match",
+                    query=query,
+                    fields=["name^2", "description"],
+                    type="best_fields",
+                    analyzer="spanish",
+                    minimum_should_match="75%",
+                )
             )
-        )
-    else:
-        search = search.query(Q("match_all"))
 
-    # Aplicar filtros
-    filters = []
-    
-    # Filtro de rango de precios
-    if precio_min or precio_max:
-        price_range = {}
-        if precio_min:
-            price_range["gte"] = float(precio_min)
-        if precio_max:
-            price_range["lte"] = float(precio_max)
-        filters.append(Q("range", price=price_range))
+        # Price filter
+        if price_min is not None or price_max is not None:
+            price_range = {}
+            if price_min is not None:
+                price_range["gte"] = price_min
+            if price_max is not None:
+                price_range["lte"] = price_max
+            filter_queries.append(Q("range", price=price_range))
 
-    # Filtro por categoría
-    if categoria:
-        filters.append(Q("term", category=categoria))
+        # Category filter
+        if category:
+            filter_queries.append(Q("term", category=category.lower()))
 
-    # Filtro de stock disponible
-    if solo_disponibles:
-        filters.append(Q("range", stock={"gt": 0}))
+        # Stock filter
+        if only_available:
+            filter_queries.append(Q("range", stock={"gt": 0}))
 
-    # Aplicar todos los filtros
-    if filters:
-        search = search.filter('bool', must=filters)
+        # Build the complete query
+        if must_queries or filter_queries:
+            search = search.query(
+                Q(
+                    "bool",
+                    must=must_queries if must_queries else [Q("match_all")],
+                    filter=filter_queries,
+                )
+            )
 
-    # Agregar resaltado de coincidencias
-    search = search.highlight('name', 'description',
-                            pre_tags=['<em>'],
-                            post_tags=['</em>'],
-                            fragment_size=150)
+        # Execute search
+        response = search.execute()
 
-    # Ejecutar búsqueda
-    response = search.execute()
-
-    # Preparar resultados
-    results = []
-    for hit in response:
-        result = {
-            "id": hit.meta.id,
-            "name": hit.name,
-            "description": hit.description,
-            "category": hit.category,
-            "price": hit.price,
-            "stock": hit.stock,
-            "score": hit.meta.score,
-            "highlights": {
-                "name": hit.meta.highlight.name[0] if hasattr(hit.meta, 'highlight') and hasattr(hit.meta.highlight, 'name') else None,
-                "description": hit.meta.highlight.description[0] if hasattr(hit.meta, 'highlight') and hasattr(hit.meta.highlight, 'description') else None
+        # Prepare results
+        results = []
+        for hit in response:
+            result = {
+                "id": hit.meta.id,
+                "name": hit.name,
+                "description": hit.description,
+                "category": hit.category,
+                "price": float(hit.price),  # Ensure price is float
+                "stock": int(hit.stock),  # Ensure stock is int
+                "score": hit.meta.score,
             }
-        }
-        results.append(result)
+            results.append(result)
 
-    return Response({
-        "total": response.hits.total.value,
-        "max_score": response.hits.max_score,
-        "results": results
-    })
+        return Response(
+            {
+                "total": response.hits.total.value,
+                "max_score": response.hits.max_score,
+                "results": results,
+            }
+        )
+
+    except ESConnectionError:
+        return Response(
+            {"error": "Connection error with the search service"}, status=503
+        )
+    except Exception as e:
+        return Response({"error": f"Internal server error: {str(e)}"}, status=500)

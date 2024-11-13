@@ -105,7 +105,7 @@ Para la optimizacion de consultas se uso Claude para mejorar las consultas de El
 De manera genral se uso la IA para contruir logica solida en cada tarea. Las herramientas utilizadas fueron:
 - **ChatGPT**: Generar documentos.
 - **Claude**: Mejorar consultas.
-- **Codeium**: Refactorizar código.
+- **Codeium**: Refactorizar código, gestionar errores.
 - **Perplexity**: Búsqueda de información relacionada.
 
 ## Licencia
