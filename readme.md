@@ -175,7 +175,7 @@ class ProductDocument(Document):
 The project leverages various AI tools for development optimization:
 - **Query Optimization**: Elasticsearch DSL queries refined using Claude
 - **Code Quality**: Refactoring and error handling improved with Codeium
-- **Documentation**: Technical writing enhanced with GPT-4
+- **Documentation**: Technical writing enhanced with GPT-4 [Technical Documentation](project_technical_specifications.md)
 - **Research**: Architecture decisions supported by Perplexity
 
 ## 📈 Performance Considerations

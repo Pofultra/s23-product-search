@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import search_products
+from .views import ReadmeView, search_products
 
 
 urlpatterns = [
-    path("search/", search_products, name="search-products"),
+    path("api/search/", search_products, name="search-products"),
+    path('', ReadmeView.as_view(), name='readme'),
 ]

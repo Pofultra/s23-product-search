@@ -1,8 +1,16 @@
+from django.shortcuts import render
+from django.views import View
 from elasticsearch_dsl import Q
 from elasticsearch.exceptions import ConnectionError as ESConnectionError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .documents import ProductDocument
+
+
+class ReadmeView(View):
+    def get(self, request):
+        
+        return render(request, "home.html")
 
 
 @api_view(["GET"])
