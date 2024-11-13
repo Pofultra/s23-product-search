@@ -89,6 +89,10 @@ python manage.py createsuperuser
 python manage.py search_index --create
 python manage.py search_index --populate
 ```
+6. **Run Server**
+```bash
+python manage.py runserver
+```
 
 ## 🔌 API Reference
 
