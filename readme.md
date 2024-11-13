@@ -177,10 +177,17 @@ class ProductDocument(Document):
 
 ## 🤖 AI Integration
 The project leverages various AI tools for development optimization:
-- **Query Optimization**: Elasticsearch DSL queries refined using Claude
-- **Code Quality**: Refactoring and error handling improved with Codeium
-- **Documentation**: Technical writing enhanced with GPT-4 [Technical Documentation](project_technical_specifications.md)
 - **Research**: Architecture decisions supported by Perplexity
+I utilize this AI as an information retrieval agent to establish the knowledge base I need to tackle a specific task, researching the terms of the requirements that I need to delve deeper into. This enables me to start development with a solid, up-to-date foundation of knowledge on the project's topic.
+
+- **Documentation**: Technical writing enhanced with GPT-4 [Technical Documentation](project_technical_specifications.md)
+I take the challenge requirement and ask the AI to break it down into technical tasks, evaluating the time required and complexity according to the requirements. This allows me to prioritize tasks based on their impact on the project or expected results. This also helps me generate more detailed documentation.
+
+- **Query Optimization**: Elasticsearch DSL queries refined using Claude.
+  After having the codebase of the project with its basic functionality in its MVP, I take the dependent code blocks (models.py, documents.py, views.py) and build a prompt in which I pass the requirements of the task with the goal of the AI returning a more robust logic adapted to the context of the application.
+
+- **Code Quality**: Refactoring and error handling improved with Codeium
+I utilize this AI assistant linked to my VS Code IDE to increase coding speed and generate logical code based on the project's context.
 
 ## 📈 Performance Considerations
 - Implemented query result caching
