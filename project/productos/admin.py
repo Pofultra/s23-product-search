@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.urls import path
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django import forms
 from .models import Product
 import csv
@@ -33,7 +32,7 @@ class ProductAdmin(admin.ModelAdmin):
             csv_file = request.FILES["csv_file"]
             
             if not csv_file.name.endswith('.csv'):
-                messages.error(request, 'El archivo debe ser CSV')
+                messages.error(request, 'The file must be CSV')
                 return HttpResponseRedirect(request.path_info)
             
             decoded_file = csv_file.read().decode('utf-8')
@@ -50,20 +49,23 @@ class ProductAdmin(admin.ModelAdmin):
                         stock=int(row['stock'])
                     )
                 except Exception as e:
-                    messages.error(request, f'Error en la fila {reader.line_num}: {str(e)}')
+                    messages.error(request, f'Error in line {reader.line_num}: {str(e)}')
                     continue
             
-            messages.success(request, 'Importación completada con éxito')
+            messages.success(request, 'Import completed successfully')
             return HttpResponseRedirect("../")
             
         form = CsvImportForm()
         payload = {
             "form": form,
-            "title": "Importar productos desde CSV"
+            "title": "Import products from CSV"
         }
         return render(request, "admin/csv_form.html", payload)
 
     def export_as_csv(self, request, queryset):
+        """
+        Export selected products as CSV
+        """
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
 
@@ -76,4 +78,4 @@ class ProductAdmin(admin.ModelAdmin):
             writer.writerow([getattr(obj, field) for field in field_names])
 
         return response
-    export_as_csv.short_description = "Exportar productos seleccionados como CSV"
+    export_as_csv.short_description = "Export selected products as CSV"

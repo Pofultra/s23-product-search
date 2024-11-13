@@ -14,7 +14,9 @@ class ProductDocument(Document):
     description = fields.TextField(
         analyzer='spanish'
     )
-    category = fields.KeywordField()
+    category = fields.KeywordField(
+        normalizer='lowercase'
+    )
     price = fields.FloatField()
     stock = fields.IntegerField()
 
@@ -28,6 +30,12 @@ class ProductDocument(Document):
                     'spanish_custom': {
                         'type': 'spanish',
                         'stopwords': '_spanish_'
+                    }
+                },
+                'normalizer': {
+                    'lowercase': {
+                        'type': 'custom',
+                        'filter': ['lowercase', 'asciifolding']
                     }
                 }
             }
